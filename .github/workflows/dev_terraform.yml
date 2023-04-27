@@ -1,4 +1,4 @@
-name: CI
+name: Terraform S3
 
 on:
   push:
