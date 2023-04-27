@@ -15,6 +15,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # Runs a single command using the runners shell
+      - name: Configure AWS Credentials Action For GitHub Actions
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-2 
+
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v2
             
