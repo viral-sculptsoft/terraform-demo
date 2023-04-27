@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Terraform CLI
+        uses: hashicorp/setup-terraform@v2
+            
+      - name: Terraform Init
+        id: init
+        working-directory: ./terraform
+        run: |
+          pwd
+          ls
+          terraform init
+        
+      - name: Terraform Validate
+        id: validate
+        working-directory: ./terraform
+        run: terraform validate -no-color
