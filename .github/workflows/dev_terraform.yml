@@ -14,14 +14,21 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v2
-            
-      - name: Terraform Init
-        working-directory: ./terraform
-        run: terraform init
+        
+      - name: Set environment variables
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+        working-directory: ./terraform
+        run: |
+          echo $AWS_ACCESS_KEY_ID
+          
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init
+        env:
+          TF_VAR_env: ${{ vars.TF_VAR_ENV }}
         
       - name: Terraform Validate
         working-directory: ./terraform
