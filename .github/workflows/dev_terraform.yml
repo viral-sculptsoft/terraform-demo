@@ -21,10 +21,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-2
-        env:
-          TF_VAR_env: ${{ vars.TF_VAR_ENV }}
-          TF_VAR_app_name: ${{ vars.TF_VAR_APP_NAME }}
-          TF_VAR_region: ${{ vars.TF_VAR_REGION }}
 
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v1
