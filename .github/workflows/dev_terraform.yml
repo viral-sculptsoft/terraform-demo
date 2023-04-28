@@ -11,50 +11,46 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Git Repository
+        uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Configure AWS Credentials Action For GitHub Actions
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-2 
+          aws-region: us-east-2
+
       - name: Setup Terraform CLI
-        uses: hashicorp/setup-terraform@v2
-      
-      # Runs a set of commands using the runners shell
-      
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: "1.0.0"
+
       - name: Terraform Init
         id: init
+        run: terraform init
         working-directory: ./terraform
-        run: |
-          pwd
-          ls
-          terraform init
-        
+
       - name: Terraform Validate
         id: validate
-        working-directory: ./terraform
         run: terraform validate -no-color
-        
+        working-directory: ./terraform
+
       - name: Terraform Plan
         id: plan
+        env:
+          TF_VAR_env: ${{ secrets.TF_VAR_ENV }}
+          TF_VAR_app_name: ${{ secrets.TF_VAR_APP_NAME }}
+          TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
+        run: terraform plan -no-color -input=false
         working-directory: ./terraform
-        run: |
-          export TF_VAR_env=${{ vars.TF_VAR_ENV }}
-          export TF_VAR_app_name=${{ vars.TF_VAR_APP_NAME }}
-          export TF_VAR_region=${{ vars.TF_VAR_REGION }}
-          env
-          terraform plan -no-color -input=false
-      
+
       - name: Terraform Apply
         id: apply
+        env:
+          TF_VAR_env: ${{ secrets.TF_VAR_ENV }}
+          TF_VAR_app_name: ${{ secrets.TF_VAR_APP_NAME }}
+          TF_VAR_region: ${{ secrets.TF_VAR_REGION }}
+        run: terraform apply -auto-approve -input=false
         working-directory: ./terraform
-        run: |
-          export TF_VAR_env=${{ vars.TF_VAR_ENV }}
-          export TF_VAR_app_name=${{ vars.TF_VAR_APP_NAME }}
-          export TF_VAR_region=${{ vars.TF_VAR_REGION }}
-          env
-          terraform apply -auto-approve -input=false
