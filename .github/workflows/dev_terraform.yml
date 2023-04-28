@@ -14,14 +14,6 @@ jobs:
       - name: Checkout Git Repository
         uses: actions/checkout@v2
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-2
-
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v1
         with:
@@ -32,6 +24,10 @@ jobs:
           echo "TF_VAR_env=${{ vars.TF_VAR_ENV }}" >> $GITHUB_ENV
           echo "TF_VAR_app_name=${{ vars.TF_VAR_APP_NAME }}" >> $GITHUB_ENV
           echo "TF_VAR_region=${{ vars.TF_VAR_REGION }}" >> $GITHUB_ENV
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
+          
         working-directory: ./terraform
 
       - name: Terraform Init
