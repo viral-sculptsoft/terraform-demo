@@ -10,6 +10,16 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
+    env:
+      TF_VAR_env: ${{ vars.TF_VAR_ENV }}
+      TF_VAR_app_name: ${{ vars.TF_VAR_APP_NAME }}
+      TF_VAR_region: ${{ vars.TF_VAR_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
     steps:
       - name: Checkout Git Repository
         uses: actions/checkout@v2
@@ -19,15 +29,6 @@ jobs:
         with:
           terraform_version: "1.0.0"
 
-      - name: Set Terraform Environment Variables
-        run: |
-          echo "TF_VAR_env=${{ vars.TF_VAR_ENV }}" >> $GITHUB_ENV
-          echo "TF_VAR_app_name=${{ vars.TF_VAR_APP_NAME }}" >> $GITHUB_ENV
-          echo "TF_VAR_region=${{ vars.TF_VAR_REGION }}" >> $GITHUB_ENV
-          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY }}" >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
-          echo "AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
-          
       - name: Terraform Init
         run: terraform init
 
