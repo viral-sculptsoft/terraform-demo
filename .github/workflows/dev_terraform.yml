@@ -27,13 +27,6 @@ jobs:
         with:
           terraform_version: "1.0.0"
       
-      - name: Terraform Environment Variable
-        working-directory: ./terraform
-        env:
-          TF_VAR_env: ${{ vars.TF_VAR_ENV }}
-          TF_VAR_app_name: ${{ vars.TF_VAR_APP_NAME }}
-          TF_VAR_region: ${{ vars.TF_VAR_REGION }}
-
       - name: Terraform Init
         id: init
         run: terraform init
