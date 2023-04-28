@@ -10,6 +10,9 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
     steps:
       - name: Checkout Git Repository
         uses: actions/checkout@v2
@@ -28,24 +31,14 @@ jobs:
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
           echo "AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
           
-        working-directory: ./terraform
-
       - name: Terraform Init
-        id: init
         run: terraform init
-        working-directory: ./terraform
 
       - name: Terraform Validate
-        id: validate
         run: terraform validate -no-color
-        working-directory: ./terraform
 
       - name: Terraform Plan
-        id: plan
         run: terraform plan -no-color -input=false
-        working-directory: ./terraform
 
       - name: Terraform Apply
-        id: apply
         run: terraform apply -auto-approve -input=false
-        working-directory: ./terraform
