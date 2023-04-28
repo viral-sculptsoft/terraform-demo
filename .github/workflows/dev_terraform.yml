@@ -7,6 +7,11 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+env:
+  TF_VAR_env: ${{ vars.TF_VAR_ENV }}
+  TF_VAR_app_name: ${{ vars.TF_VAR_APP_NAME }}
+  TF_VAR_region: ${{ vars.TF_VAR_REGION }}
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -20,13 +25,20 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: us-east-2
 
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: "1.0.0"
-      
+
+      - name: Set Terraform Environment Variables
+        run: |
+          echo "TF_VAR_env=${{ vars.TF_VAR_ENV }}" >> $GITHUB_ENV
+          echo "TF_VAR_app_name=${{ vars.TF_VAR_APP_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_region=${{ vars.TF_VAR_REGION }}" >> $GITHUB_ENV
+        working-directory: ./terraform
+
       - name: Terraform Init
         id: init
         run: terraform init
