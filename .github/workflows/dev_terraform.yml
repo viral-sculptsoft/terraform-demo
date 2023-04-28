@@ -5,37 +5,38 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
   workflow_dispatch:
 
 jobs:
-  build:
+  terraform:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./terraform
+    env:
+      TF_VAR_env: ${{ vars.TF_VAR_ENV }}
+      TF_VAR_app_name: ${{ vars.TF_VAR_APP_NAME }}
+      TF_VAR_region: ${{ vars.TF_VAR_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      - name: Configure AWS Credentials Action For GitHub Actions
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-2 
+      - name: Checkout Git Repository
+        uses: actions/checkout@v2
 
       - name: Setup Terraform CLI
-        uses: hashicorp/setup-terraform@v2
-            
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: "1.0.0"
+
       - name: Terraform Init
-        id: init
-        working-directory: ./terraform
-        run: |
-          pwd
-          ls
-          terraform init
-        
+        run: terraform init
+
       - name: Terraform Validate
-        id: validate
-        working-directory: ./terraform
         run: terraform validate -no-color
+
+      - name: Terraform Plan
+        run: terraform plan -no-color -input=false
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false
