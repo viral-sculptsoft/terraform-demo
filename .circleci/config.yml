@@ -4,6 +4,10 @@ jobs:
   build:
     docker:
       - image: hashicorp/terraform:1.0.4
+    environment:
+      TF_VAR_app_name: 'myapp'
+      TF_VAR_env: 'stage2'
+      TF_VAR_region: 'us-east-1'
     steps:
       - checkout
       - run:
