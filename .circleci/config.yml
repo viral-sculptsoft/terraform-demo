@@ -4,12 +4,13 @@ jobs:
   build:
     docker:
       - image: hashicorp/terraform:1.0.4
-    working_directory: ./terraform
     steps:
       - checkout
       - run:
           name: Initialize Terraform
           command: terraform init
+          working_directory: ./terraform
       - run:
           name: Apply Terraform Plan
           command: terraform apply -auto-approve
+          working_directory: ./terraform
